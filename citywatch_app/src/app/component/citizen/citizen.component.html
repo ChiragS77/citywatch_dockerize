@@ -1,0 +1,131 @@
+<div class="min-h-screen bg-[#eef2f1] text-gray-800">
+
+  <!-- GOV HEADER -->
+  <header class="sticky top-0 z-50 bg-white border-b shadow-sm">
+    <div class="h-2 bg-orange-500"></div>
+
+    <div class="px-6 py-4 flex justify-between items-center">
+      <div>
+        <h1 class="text-2xl font-bold text-[#083c2f]">
+          CityWatch Ward Citizen Portal
+        </h1>
+        <p class="text-sm text-gray-500">
+          Municipal Ward Member Management System
+        </p>
+      </div>
+
+      <img src="https://i.pravatar.cc/40"
+           class="w-10 h-10 rounded-full border object-cover" />
+    </div>
+  </header>
+
+  <div class="flex">
+
+    <!-- SIDEBAR -->
+    <aside class="w-72 h-screen sticky top-[82px] bg-white border-r shadow-sm p-5">
+
+      <h2 class="text-xl font-bold text-[#083c2f] mb-1">
+        Nagarsevak Panel
+      </h2>
+
+      <p class="text-xs text-gray-500 mb-6 border-b pb-4">
+        Ward-level public administration
+      </p>
+
+      <nav class="space-y-2">
+        <button routerLink="/nagarsevak" class="gov-nav">
+          Dashboard
+        </button>
+
+        <button routerLink="/complaints" class="gov-nav">
+          Complaints
+        </button>
+
+        <button routerLink="/citizen" class="gov-nav active">
+          Ward Members
+        </button>
+
+        <button routerLink="/notify" class="gov-nav">
+          Payment Requests
+        </button>
+      </nav>
+    </aside>
+
+    <!-- MAIN -->
+    <main class="flex-1 p-6">
+
+      <!-- TITLE CARD -->
+      <section class="bg-white border-l-4 border-[#083c2f] rounded-lg shadow-sm p-5 mb-6">
+        <h2 class="text-2xl font-bold text-gray-800">
+          Ward Members
+        </h2>
+        <p class="text-gray-500">
+          List of registered citizens under your ward jurisdiction.
+        </p>
+      </section>
+
+      <!-- CITIZEN TABLE -->
+      <section class="bg-white border rounded-lg shadow-sm overflow-hidden">
+
+        <div class="bg-[#083c2f] text-white px-5 py-4">
+          <h3 class="font-bold text-lg">Registered Citizens</h3>
+          <p class="text-sm text-green-100">Citizen records by ward and location</p>
+        </div>
+
+        <table class="w-full text-left">
+          <thead class="bg-slate-100 border-b">
+            <tr>
+              <th class="p-4">Citizen</th>
+              <th class="p-4">Email</th>
+              <th class="p-4">Ward</th>
+              <th class="p-4">Location</th>
+              <th class="p-4 text-right">Action</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            <tr *ngFor="let user of citizens"
+                class="border-b hover:bg-slate-50">
+
+              <td class="p-4">
+                <div class="flex items-center gap-3">
+                  <img [src]="user.profileImage || 'https://i.pravatar.cc/50'"
+                       class="w-11 h-11 rounded-full border object-cover" />
+
+                  <div>
+                    <p class="font-bold text-gray-800">{{ user.name }}</p>
+                    <p class="text-xs text-gray-500">Registered Citizen</p>
+                  </div>
+                </div>
+              </td>
+
+              <td class="p-4 text-sm text-gray-600">
+                {{ user.email }}
+              </td>
+
+              <td class="p-4">
+                <span class="px-3 py-1 rounded-full bg-green-100 text-green-700 text-xs font-bold">
+                  Ward {{ user.wardNo }}
+                </span>
+              </td>
+
+              <td class="p-4 text-sm text-gray-600">
+                {{ user.taluka }}, {{ user.district }}
+              </td>
+
+              <td class="p-4 text-right">
+                <button class="border border-[#083c2f] text-[#083c2f] px-4 py-2 rounded-lg font-semibold hover:bg-[#083c2f] hover:text-white">
+                  View Profile
+                </button>
+              </td>
+
+            </tr>
+          </tbody>
+        </table>
+
+      </section>
+
+    </main>
+
+  </div>
+</div>

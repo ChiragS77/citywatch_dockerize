@@ -1,0 +1,195 @@
+<!-- ===============================
+manage-workers.component.html
+================================ -->
+
+<div class="manage-layout">
+
+  <aside class="sidebar">
+    <div>
+      <div class="brand">
+        <div class="brand-icon">🛡️</div>
+        <div>
+          <h2>CityWatch</h2>
+          <p>Admin Portal</p>
+        </div>
+      </div>
+
+      <button class="nav" routerLink="/admin">🏠 Dashboard</button>
+
+      <p class="nav-title">Account Management</p>
+      <button class="nav" routerLink="/admin/nagarsevak">👨‍💼 Nagarsevak</button>
+      <button class="nav" routerLink="/admin/nagaradhyaksha">🏛️ Nagaradhyaksha</button>
+      <button class="nav active" routerLink="/admin/worker">👷 Workers</button>
+    </div>
+
+    <button class="nav logout">🚪 Logout</button>
+  </aside>
+
+  <main class="main">
+
+    <header class="topbar">
+      <div>
+        <h1>Manage Workers</h1>
+        <p>View, filter, activate, deactivate or delete worker accounts.</p>
+      </div>
+
+      <div class="admin-profile">
+        <span>🔔</span>
+        <img src="assets/default-user.png">
+        <div>
+          <h4>Admin</h4>
+          <p>Super Administrator</p>
+        </div>
+      </div>
+    </header>
+
+    <section class="stats-grid">
+      <div class="stat-card blue">
+        <div class="icon">👷</div>
+        <div>
+          <p>Total Workers</p>
+          <h2>{{stats.total}}</h2>
+          <small>Registered workers</small>
+        </div>
+      </div>
+
+      <div class="stat-card green">
+        <div class="icon">✅</div>
+        <div>
+          <p>Active Workers</p>
+          <h2>{{stats.active}}</h2>
+          <small>Available now</small>
+        </div>
+      </div>
+
+      <div class="stat-card orange">
+        <div class="icon">⚠️</div>
+        <div>
+          <p>Inactive Workers</p>
+          <h2>{{stats.inactive}}</h2>
+          <small>Currently unavailable</small>
+        </div>
+      </div>
+
+      <div class="stat-card purple">
+        <div class="icon">⭐</div>
+        <div>
+          <p>Average Rating</p>
+          <h2>{{stats.averageRating}}</h2>
+          <small>Overall performance</small>
+        </div>
+      </div>
+    </section>
+
+    <section class="panel">
+
+      <div class="toolbar">
+        <input
+          type="text"
+          placeholder="Search by name, email, city, work type..."
+          [(ngModel)]="searchText"
+          (input)="applyFilter()">
+
+        <select [(ngModel)]="selectedWorkType" (change)="applyFilter()">
+          <option value="">All Work Types</option>
+          <option *ngFor="let type of workTypes" [value]="type">{{type}}</option>
+        </select>
+
+        <select [(ngModel)]="selectedAvailability" (change)="applyFilter()">
+          <option value="">All Status</option>
+          <option value="ACTIVE">Active</option>
+          <option value="INACTIVE">Inactive</option>
+        </select>
+
+        <button class="reset-btn" (click)="resetFilter()">Reset</button>
+      </div>
+
+      <table>
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Worker</th>
+            <th>Email</th>
+            <th>Work Type</th>
+            <th>Location</th>
+            <th>Experience</th>
+            <th>Rating</th>
+            <th>Total Jobs</th>
+            <th>Status</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          <tr *ngFor="let w of filteredWorkers; let i = index">
+            <td>{{i + 1}}</td>
+
+            <td>
+              <div class="worker-profile">
+                <img [src]="w.profileImage || 'assets/default-user.png'">
+                <div>
+                  <h4>{{w.user?.name || 'Worker'}}</h4>
+                  <p>ID: {{w.id}}</p>
+                </div>
+              </div>
+            </td>
+
+            <td>{{w.user?.email}}</td>
+
+            <td>
+              <span class="worktype">{{w.workType}}</span>
+            </td>
+
+            <td>
+              {{w.user?.district}}, {{w.user?.taluka}}
+            </td>
+
+            <td>{{w.experience || 0}} yrs</td>
+
+            <td>⭐ {{w.rating || 0}}</td>
+
+            <td>{{w.totalJobs || 0}}</td>
+
+            <td>
+              <span class="status" [ngClass]="w.available ? 'active' : 'inactive'">
+                {{w.available ? 'Active' : 'Inactive'}}
+              </span>
+            </td>
+
+            <td>
+              <div class="actions">
+                <button
+                  class="activate-btn"
+                  *ngIf="!w.available"
+                  (click)="activateWorker(w.id)">
+                  Activate
+                </button>
+
+                <button
+                  class="deactivate-btn"
+                  *ngIf="w.available"
+                  (click)="deactivateWorker(w.id)">
+                  Deactivate
+                </button>
+
+                <button class="delete-btn" (click)="deleteWorker(w.id)">
+                  Delete
+                </button>
+              </div>
+            </td>
+          </tr>
+
+          <tr *ngIf="filteredWorkers.length === 0">
+            <td colspan="10" class="empty">No workers found</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="note">
+        ℹ️ Workers create their own account. Admin can activate, deactivate, filter and delete worker accounts.
+      </div>
+
+    </section>
+
+  </main>
+</div>

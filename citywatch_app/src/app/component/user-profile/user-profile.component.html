@@ -1,0 +1,500 @@
+<div class="min-h-screen bg-[#f4f7fb] text-slate-800">
+
+  <!-- ========================================= -->
+  <!-- HEADER -->
+  <!-- ========================================= -->
+
+  <header class="sticky top-0 z-50 bg-gradient-to-r from-[#073b7a] to-[#0a4c92] text-white shadow-lg">
+
+    <div class="px-8 py-4 flex justify-between items-center">
+
+      <!-- LEFT -->
+      <div class="flex items-center gap-4">
+
+        <div class="w-14 h-14 rounded-full border border-white/30 flex items-center justify-center text-2xl bg-white/10">
+          🏛️
+        </div>
+
+        <div>
+          <h1 class="text-3xl font-bold">
+            CityWatch Citizen Portal
+          </h1>
+
+          <p class="text-sm text-blue-100">
+            Municipal Governance & Civic Management System
+          </p>
+        </div>
+
+      </div>
+
+      <!-- RIGHT -->
+      <div class="flex items-center gap-6">
+
+        <button
+          class="bg-white/10 hover:bg-white/20 border border-white/20 px-4 py-2 rounded-lg text-sm font-semibold transition">
+          Help Desk
+        </button>
+
+        <img
+          [src]="profilePreview || user?.profileImage || 'assets/default-user.png'"
+          class="w-12 h-12 rounded-full border-2 border-white object-cover shadow">
+
+      </div>
+
+    </div>
+
+  </header>
+
+  <!-- ========================================= -->
+  <!-- BODY -->
+  <!-- ========================================= -->
+
+  <div class="flex">
+
+    <!-- ========================================= -->
+    <!-- SIDEBAR -->
+    <!-- ========================================= -->
+
+    <aside class="w-72 min-h-screen bg-white border-r shadow-sm p-6 flex flex-col justify-between">
+
+      <div>
+
+        <div class="mb-8">
+
+          <h2 class="text-2xl font-bold text-[#073b7a]">
+            Citizen Services
+          </h2>
+
+          <p class="text-sm text-slate-500 mt-1">
+            Ward-level access dashboard
+          </p>
+
+        </div>
+
+        <!-- NAVIGATION -->
+        <nav class="space-y-2">
+
+          <button routerLink="/" class="gov-nav active">
+            🏠 Dashboard
+          </button>
+
+          <button (click)="openCreatePost()" class="gov-nav">
+            📝 Register Complaint
+          </button>
+
+          <button routerLink="/profile" class="gov-nav">
+            👤 Citizen Profile
+          </button>
+
+          <button class="gov-nav">
+            📋 Complaint History
+          </button>
+
+          <button class="gov-nav">
+            🔔 Notifications
+          </button>
+
+          <button class="gov-nav">
+            📢 Public Announcements
+          </button>
+
+          <button class="gov-nav">
+            📊 Reports & Statistics
+          </button>
+
+          <button class="gov-nav">
+            ❓ Help & Support
+          </button>
+
+        </nav>
+
+      </div>
+
+      <!-- BOTTOM -->
+      <div>
+
+        <button class="gov-nav logout">
+          🚪 Logout
+        </button>
+
+        <p class="text-xs text-slate-400 text-center mt-5">
+          © 2025 CityWatch Civic Portal
+        </p>
+
+      </div>
+
+    </aside>
+
+    <!-- ========================================= -->
+    <!-- MAIN CONTENT -->
+    <!-- ========================================= -->
+
+    <main class="flex-1 p-8 overflow-y-auto">
+
+      <!-- HERO -->
+      <section
+        class="bg-gradient-to-r from-blue-50 to-white border rounded-2xl p-8 mb-8 shadow-sm">
+
+        <div class="flex justify-between items-center">
+
+          <div>
+
+            <h2 class="text-4xl font-bold text-slate-900 mb-3">
+              Welcome to CityWatch
+            </h2>
+
+            <p class="text-lg text-slate-600 max-w-2xl">
+              Submit civic complaints, monitor ward activities, receive public updates and connect with municipal services in your area.
+            </p>
+
+          </div>
+
+          <div class="hidden lg:block text-[120px] opacity-10">
+            🏙️
+          </div>
+
+        </div>
+
+      </section>
+
+      <!-- ========================================= -->
+      <!-- PROFILE CARD -->
+      <!-- ========================================= -->
+
+      <section class="bg-white rounded-2xl border shadow-sm overflow-hidden mb-8">
+
+        <!-- TOP -->
+        <div
+          class="bg-gradient-to-r from-[#073b7a] to-[#0a4c92] text-white px-8 py-6 flex justify-between items-center">
+
+          <div>
+
+            <h2 class="text-2xl font-bold">
+              Citizen Profile Information
+            </h2>
+
+            <p class="text-blue-100 text-sm mt-1">
+              Registered municipal citizen details
+            </p>
+
+          </div>
+
+          <button
+            (click)="openEditProfile()"
+            class="bg-white text-[#073b7a] px-5 py-2 rounded-lg font-semibold shadow hover:bg-slate-100 transition">
+
+            Edit Profile
+
+          </button>
+
+        </div>
+
+        <!-- BODY -->
+        <div class="p-8 flex flex-col lg:flex-row gap-10">
+
+          <!-- IMAGE -->
+          <div class="flex flex-col items-center">
+
+            <div class="relative">
+
+              <img
+                [src]="profilePreview || user?.profileImage || 'assets/default-user.png'"
+                class="w-40 h-40 rounded-full object-cover border-4 border-blue-100 shadow">
+
+              <label
+                class="absolute bottom-2 right-2 bg-[#073b7a] hover:bg-[#052e63] text-white w-10 h-10 rounded-full flex items-center justify-center cursor-pointer shadow-lg transition">
+
+                ✏️
+
+                <input
+                  type="file"
+                  class="hidden"
+                  (change)="onProfileImageSelected($event)" />
+
+              </label>
+
+            </div>
+
+            <button
+              *ngIf="profilePreview"
+              (click)="uploadProfileImage()"
+              [disabled]="isUploading"
+              class="mt-5 bg-[#073b7a] hover:bg-[#052e63] text-white px-6 py-2 rounded-lg font-semibold shadow">
+
+              {{ isUploading ? 'Uploading...' : 'Save Image' }}
+
+            </button>
+
+          </div>
+
+          <!-- INFO -->
+          <div class="flex-1">
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+
+              <div class="info-box">
+                <p class="info-title">Full Name</p>
+                <p class="info-value">{{ user?.name }}</p>
+              </div>
+
+              <div class="info-box">
+                <p class="info-title">Registered Email</p>
+                <p class="info-value">{{ user?.email }}</p>
+              </div>
+
+              <div class="info-box">
+                <p class="info-title">District</p>
+                <p class="info-value">{{ user?.district }}</p>
+              </div>
+
+              <div class="info-box">
+                <p class="info-title">Taluka</p>
+                <p class="info-value">{{ user?.taluka }}</p>
+              </div>
+
+              <div class="info-box">
+                <p class="info-title">Ward Number</p>
+                <p class="info-value">{{ user?.wardNo }}</p>
+              </div>
+
+            </div>
+
+          </div>
+
+        </div>
+
+      </section>
+
+      <!-- ========================================= -->
+      <!-- POSTS -->
+      <!-- ========================================= -->
+
+      <section>
+
+        <div class="flex justify-between items-center mb-6">
+
+          <div>
+            <h3 class="text-3xl font-bold text-slate-900">
+              Registered Complaints & Posts
+            </h3>
+
+            <p class="text-slate-500 mt-1">
+              Civic issue and public update history
+            </p>
+          </div>
+
+        </div>
+
+        <!-- LOADING -->
+        <div *ngIf="isLoading"
+             class="bg-white rounded-xl border p-10 text-center shadow-sm">
+
+          <div class="loader big mx-auto mb-4"></div>
+
+          <p class="text-slate-500">
+            Loading civic posts...
+          </p>
+
+        </div>
+
+        <!-- EMPTY -->
+        <div *ngIf="!isLoading && userPosts.length === 0"
+             class="bg-white rounded-xl border p-10 text-center shadow-sm">
+
+          <div class="text-6xl mb-4 opacity-40">
+            📭
+          </div>
+
+          <p class="text-slate-600 text-lg">
+            No registered complaints or posts available.
+          </p>
+
+        </div>
+
+        <!-- POSTS -->
+        <div class="space-y-6">
+
+          <article
+            *ngFor="let post of userPosts"
+            class="bg-white border rounded-2xl shadow-sm overflow-hidden hover:shadow-md transition">
+
+            <!-- TOP -->
+            <div
+              class="px-6 py-5 border-b bg-[#f8fbff] flex justify-between items-center">
+
+              <div>
+
+                <h4 class="font-bold text-lg text-slate-800">
+                  {{ user?.name }}
+                </h4>
+
+                <p class="text-sm text-slate-500">
+                  {{ post.createdAt }}
+                </p>
+
+              </div>
+
+              <!-- STATUS -->
+              <span
+                *ngIf="post.type === 'COMPLAINT'"
+                class="px-4 py-2 rounded-full text-xs font-bold"
+                [ngClass]="{
+                  'bg-yellow-100 text-yellow-700': post.status === 'PENDING',
+                  'bg-blue-100 text-blue-700': post.status === 'ACCEPTED',
+                  'bg-orange-100 text-orange-700': post.status === 'IN_PROGRESS',
+                  'bg-green-100 text-green-700': post.status === 'COMPLETED'
+                }">
+
+                {{ post.status }}
+
+              </span>
+
+            </div>
+
+            <!-- BODY -->
+            <div class="p-6">
+
+              <p class="text-slate-700 leading-7 mb-5">
+                {{ post.caption }}
+              </p>
+
+              <img
+                *ngIf="post.imageUrl"
+                [src]="post.imageUrl"
+                class="w-full max-h-[450px] object-cover rounded-xl border shadow-sm mb-5">
+
+              <!-- ACTIONS -->
+              <div
+                class="flex items-center gap-8 border-t pt-5 text-sm text-slate-600 font-medium">
+
+                <button class="hover:text-[#073b7a] transition">
+                  👍 {{ post.likeCount }} Likes
+                </button>
+
+                <button class="hover:text-[#073b7a] transition">
+                  💬 {{ post.commentCount }} Comments
+                </button>
+
+              </div>
+
+            </div>
+
+          </article>
+
+        </div>
+
+      </section>
+
+    </main>
+
+  </div>
+
+</div>
+<!-- EDIT PROFILE MODAL -->
+<div *ngIf="showEditProfile"
+     class="fixed inset-0 z-50 flex items-center justify-center px-4">
+
+  <!-- BACKDROP -->
+  <div class="absolute inset-0 bg-black/60 backdrop-blur-[2px]"
+       (click)="closeEditProfile()"></div>
+
+  <!-- MODAL -->
+  <div class="relative bg-white rounded-2xl shadow-2xl border w-[560px] max-w-[95vw] overflow-hidden z-10">
+
+    <!-- HEADER -->
+    <div class="bg-gradient-to-r from-[#073b7a] to-[#0a4c92] text-white px-6 py-5 flex justify-between items-start">
+
+      <div class="flex gap-4">
+        <div class="w-12 h-12 rounded-xl bg-white/10 border border-white/20 flex items-center justify-center text-2xl">
+          👤
+        </div>
+
+        <div>
+          <h2 class="text-2xl font-bold">
+            Edit Citizen Profile
+          </h2>
+
+          <p class="text-sm text-blue-100 mt-1">
+            Update your registered municipal information
+          </p>
+        </div>
+      </div>
+
+      <button (click)="closeEditProfile()"
+              class="text-2xl hover:bg-white/10 w-10 h-10 rounded-lg transition">
+        ×
+      </button>
+
+    </div>
+
+    <!-- BODY -->
+    <div class="p-6 bg-[#f8fbff]">
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+
+        <div>
+          <label class="modal-label">Full Name</label>
+          <input
+            [(ngModel)]="editForm.name"
+            class="modal-input"
+            placeholder="Enter full name" />
+        </div>
+
+        <div>
+          <label class="modal-label">Ward Number</label>
+          <input
+            [(ngModel)]="editForm.wardNo"
+            type="number"
+            class="modal-input"
+            placeholder="Enter ward number" />
+        </div>
+
+        <div>
+          <label class="modal-label">District</label>
+          <input
+            [(ngModel)]="editForm.district"
+            class="modal-input"
+            placeholder="Enter district" />
+        </div>
+
+        <div>
+          <label class="modal-label">Taluka</label>
+          <input
+            [(ngModel)]="editForm.taluka"
+            class="modal-input"
+            placeholder="Enter taluka" />
+        </div>
+
+      </div>
+
+      <!-- INFO NOTE -->
+      <div class="mt-5 bg-blue-50 border border-blue-100 rounded-xl p-4 text-sm text-slate-600">
+        <p class="font-semibold text-[#073b7a] mb-1">
+          Profile Update Notice
+        </p>
+        <p>
+          Please enter correct ward and location details. These details are used for ward-level civic services.
+        </p>
+      </div>
+
+      <!-- ACTIONS -->
+      <div class="flex justify-end gap-4 mt-6 pt-5 border-t">
+
+        <button
+          (click)="closeEditProfile()"
+          class="px-6 py-3 rounded-xl border border-slate-300 font-semibold text-slate-700 hover:bg-slate-100 transition">
+          Cancel
+        </button>
+
+        <button
+          (click)="saveProfile()"
+          class="bg-gradient-to-r from-[#073b7a] to-[#0a4c92] hover:opacity-95 text-white px-7 py-3 rounded-xl font-bold shadow-lg transition">
+          Save Changes
+        </button>
+
+      </div>
+
+    </div>
+
+  </div>
+</div>

@@ -1,0 +1,263 @@
+<div class="min-h-screen bg-[#eef2f1]">
+    <div class="sticky top-0 z-50">
+
+
+  <!-- TOP BAR -->
+  <div class="h-2 bg-orange-500"></div>
+
+   <header class="bg-white border-b shadow-sm px-8 py-4 flex justify-between items-center">
+      <div>
+        <h1 class="text-2xl font-bold text-[#083c2f]">CityWatch</h1>
+        <p class="text-sm text-gray-500">Municipal Digital Governance Registration Portal</p>
+      </div>
+
+      <a routerLink="/login"
+         class="text-sm font-semibold text-[#083c2f] hover:underline">
+        Already registered? Login
+      </a>
+    </header>
+
+    </div>
+
+  <main class="p-6 flex justify-center">
+
+    <div class="w-full max-w-6xl bg-white rounded-2xl shadow-xl border overflow-hidden">
+
+      <!-- HEADER -->
+      <div class="bg-[#083c2f] text-white px-8 py-6">
+        <p class="text-xs uppercase tracking-widest text-orange-300 font-bold">
+          Citizen & Worker Registration
+        </p>
+
+        <h2 class="text-3xl font-bold mt-1">
+          Create CityWatch Account
+        </h2>
+
+        <p class="text-green-100 mt-1">
+          Register to access complaint services, worker assignments and municipal updates.
+        </p>
+      </div>
+
+      <form [formGroup]="registerForm" (ngSubmit)="onSubmit()" class="p-8">
+
+        <!-- SECTION TITLE -->
+        <div class="mb-6 border-b pb-4">
+          <h3 class="text-xl font-bold text-gray-800">Personal & Location Details</h3>
+          <p class="text-sm text-gray-500">Fill accurate information for ward-based services</p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+
+          <!-- NAME -->
+          <div>
+            <label class="form-label">Full Name</label>
+            <input type="text"
+                   formControlName="name"
+                   placeholder="Enter full name"
+                   class="form-control">
+
+            <p *ngIf="f['name'].touched && f['name'].errors" class="error-text">
+              <span *ngIf="f['name'].errors?.['required']">Name is required</span>
+              <span *ngIf="f['name'].errors?.['minlength']">Minimum 3 characters required</span>
+            </p>
+          </div>
+
+          <!-- EMAIL -->
+          <div>
+            <label class="form-label">Email Address</label>
+            <input type="email"
+                   formControlName="email"
+                   placeholder="Enter email address"
+                   class="form-control">
+
+            <p *ngIf="f['email'].touched && f['email'].errors" class="error-text">
+              <span *ngIf="f['email'].errors?.['required']">Email is required</span>
+              <span *ngIf="f['email'].errors?.['email']">Enter a valid email</span>
+            </p>
+          </div>
+
+          <!-- STATE -->
+          <div>
+            <label class="form-label">State</label>
+            <select formControlName="state"
+                    class="form-control"
+                    (change)="onStateChange()">
+              <option value="">Select State</option>
+              <option *ngFor="let state of states" [value]="state">{{ state }}</option>
+            </select>
+
+            <p *ngIf="f['state'].touched && f['state'].errors" class="error-text">
+              State is required
+            </p>
+          </div>
+
+          <!-- DISTRICT -->
+          <div *ngIf="districts.length > 0">
+            <label class="form-label">District</label>
+            <select formControlName="district"
+                    class="form-control"
+                    (change)="onDistrictChange()">
+              <option value="">Select District</option>
+              <option *ngFor="let d of districts" [value]="d">{{ d }}</option>
+            </select>
+
+            <p *ngIf="f['district'].touched && f['district'].errors" class="error-text">
+              District is required
+            </p>
+          </div>
+
+          <!-- TALUKA -->
+          <div *ngIf="talukas.length > 0">
+            <label class="form-label">Taluka</label>
+            <select formControlName="taluka"
+                    class="form-control"
+                    (change)="onTalukaChange()">
+              <option value="">Select Taluka</option>
+              <option *ngFor="let t of talukas" [value]="t">{{ t }}</option>
+            </select>
+
+            <p *ngIf="f['taluka'].touched && f['taluka'].errors" class="error-text">
+              Taluka is required
+            </p>
+          </div>
+
+          <!-- WARD -->
+          <div *ngIf="wards.length > 0">
+            <label class="form-label">Ward Number</label>
+            <select formControlName="wardNo" class="form-control">
+              <option value="">Select Ward</option>
+              <option *ngFor="let w of wards" [value]="w">{{ w }}</option>
+            </select>
+
+            <p *ngIf="f['wardNo'].touched && f['wardNo'].errors" class="error-text">
+              Ward is required
+            </p>
+          </div>
+
+          <!-- AGE -->
+          <div>
+            <label class="form-label">Age</label>
+            <input type="number"
+                   formControlName="age"
+                   placeholder="Enter age"
+                   class="form-control">
+
+            <p *ngIf="f['age'].touched && f['age'].errors" class="error-text">
+              <span *ngIf="f['age'].errors?.['required']">Age is required</span>
+              <span *ngIf="f['age'].errors?.['min']">Minimum age must be 18</span>
+            </p>
+          </div>
+
+          <!-- DOB -->
+          <div>
+            <label class="form-label">Date of Birth</label>
+            <input type="date"
+                   formControlName="dob"
+                   class="form-control">
+
+            <p *ngIf="f['dob'].touched && f['dob'].errors" class="error-text">
+              Date of birth is required
+            </p>
+          </div>
+
+          <!-- PASSWORD -->
+          <div>
+            <label class="form-label">Password</label>
+            <input type="password"
+                   formControlName="password"
+                   placeholder="Create password"
+                   class="form-control">
+
+            <p *ngIf="f['password'].touched && f['password'].errors" class="error-text">
+              <span *ngIf="f['password'].errors?.['required']">Password is required</span>
+              <span *ngIf="f['password'].errors?.['minlength']">Minimum 8 characters required</span>
+            </p>
+          </div>
+
+        </div>
+
+        <!-- ROLE SECTION -->
+        <div class="mt-8 border-t pt-6">
+          <h3 class="text-xl font-bold text-gray-800">Account Type</h3>
+          <p class="text-sm text-gray-500 mb-4">Select how you want to access CityWatch</p>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+
+            <label class="role-card"
+                   [ngClass]="{'role-active': registerForm.get('role')?.value === 'USER'}">
+              <input type="radio" value="USER" formControlName="role" class="hidden">
+              <div>
+                <h4 class="font-bold text-gray-800">Citizen User</h4>
+                <p class="text-sm text-gray-500">Register complaints and track civic updates</p>
+              </div>
+            </label>
+
+            <label class="role-card"
+                   [ngClass]="{'role-active': registerForm.get('role')?.value === 'WORKER'}">
+              <input type="radio" value="WORKER" formControlName="role" class="hidden">
+              <div>
+                <h4 class="font-bold text-gray-800">Municipal Worker</h4>
+                <p class="text-sm text-gray-500">Accept assigned work and upload proof</p>
+              </div>
+            </label>
+
+          </div>
+        </div>
+
+        <!-- WORK TYPE -->
+        <div *ngIf="registerForm.get('role')?.value === 'WORKER'" class="mt-5">
+          <label class="form-label">Work Type</label>
+          <select formControlName="workType" class="form-control">
+            <option value="">Select Work Type</option>
+            <option value="ELECTRICIAN">Electrician</option>
+            <option value="PLUMBER">Plumber</option>
+            <option value="CLEANER">Cleaner</option>
+
+             <option value="ROAD_REPAIR">Road Repair Worker</option>
+            <option value="GARBAGE_COLLECTION">Garbage Collection Worker</option>
+              <option value="STREET_LIGHT_MAINTENANCE">Street Light Technician</option>
+  <option value="WATER_SUPPLY">Water Supply Technician</option>
+  <option value="DRAINAGE">Drainage Worker</option>
+  <option value="SEWERAGE">Sewerage Worker</option>
+
+  <option value="TREE_MAINTENANCE">Tree Maintenance Worker</option>
+  <option value="CIVIL_WORK">Civil Work Technician</option>
+  <option value="PEST_CONTROL">Pest Control Worker</option>
+  <option value="PARK_MAINTENANCE">Park Maintenance Worker</option>
+          </select>
+        </div>
+
+        <!-- TERMS -->
+        <div class="mt-6 flex items-center gap-2">
+          <input type="checkbox"
+                 formControlName="terms"
+                 class="w-4 h-4 accent-[#083c2f]">
+
+          <span class="text-sm text-gray-600">
+            I agree to the Terms & Conditions of CityWatch services
+          </span>
+        </div>
+
+        <p *ngIf="f['terms'].touched && f['terms'].errors" class="error-text">
+          You must accept the terms
+        </p>
+
+        <!-- ACTIONS -->
+        <div class="mt-8 flex items-center justify-between border-t pt-6">
+
+          <p class="text-sm text-gray-500">
+            Already have an account?
+            <a routerLink="/login" class="font-bold text-[#083c2f] hover:underline">Login</a>
+          </p>
+
+          <button type="submit"
+                  class="bg-[#083c2f] hover:bg-[#062f25] text-white px-8 py-3 rounded-lg font-bold shadow-lg">
+            Create Account
+          </button>
+
+        </div>
+
+      </form>
+    </div>
+  </main>
+</div>

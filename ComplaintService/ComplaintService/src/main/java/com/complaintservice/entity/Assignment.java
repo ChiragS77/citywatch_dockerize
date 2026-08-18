@@ -1,0 +1,33 @@
+package com.complaintservice.entity;
+
+import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+import java.time.LocalDateTime;
+
+@Entity
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+public class Assignment {
+
+
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    private Long postId;
+    private Long workerId;
+
+    @Enumerated(EnumType.STRING)
+    private AssignmentStatus status;
+
+    private LocalDateTime assignedAt;
+    private LocalDateTime expiresAt;
+    private String workerEmail;
+}

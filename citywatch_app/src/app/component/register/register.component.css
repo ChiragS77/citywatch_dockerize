@@ -1,0 +1,23 @@
+.form-label {
+  @apply block text-sm font-semibold text-gray-700 mb-2;
+}
+
+.form-control {
+  @apply w-full border border-gray-300 bg-slate-50 rounded-lg px-4 py-3 text-gray-800 outline-none transition;
+}
+
+.form-control:focus {
+  @apply bg-white ring-2 ring-[#083c2f] border-[#083c2f];
+}
+
+.error-text {
+  @apply text-red-600 text-sm mt-1;
+}
+
+.role-card {
+  @apply border rounded-xl p-5 cursor-pointer bg-slate-50 transition hover:bg-white hover:shadow;
+}
+
+.role-active {
+  @apply border-[#083c2f] bg-green-50 ring-2 ring-[#083c2f];
+}

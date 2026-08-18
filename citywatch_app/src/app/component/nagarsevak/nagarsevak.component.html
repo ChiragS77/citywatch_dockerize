@@ -1,0 +1,226 @@
+<div class="min-h-screen bg-slate-100">
+
+  <!-- TOP GOV HEADER -->
+  <header class="bg-[#0b3d2e] text-white px-6 py-3 flex justify-between items-center shadow">
+    <div>
+      <h1 class="text-xl font-bold">CityWatch Civic </h1>
+      <p class="text-sm text-green-100">Nagarsevak Dashboard • Ward Service </p>
+    </div>
+
+    <div class="flex items-center gap-5">
+      <button routerLink="/notify" class="text-left px-4 py-3 rounded border hover:bg-slate-100">
+  💳 Worker Payments
+</button>
+
+      <img src="https://i.pravatar.cc/40" class="rounded-full border-2 border-white" />
+    </div>
+  </header>
+
+  <div class="flex">
+
+    <!-- SIDEBAR -->
+    <aside class="w-72 min-h-screen bg-white border-r shadow-sm p-5">
+      <h2 class="text-lg font-bold text-[#0b3d2e] mb-6 border-b pb-3">
+        Government Services
+      </h2>
+
+      <nav class="flex flex-col gap-3">
+        <button class="text-left px-4 py-3 rounded bg-[#0b3d2e] text-white font-semibold">
+          🏠 Dashboard
+        </button>
+
+        <button routerLink="/complaints"
+                class="text-left px-4 py-3 rounded border hover:bg-slate-100">
+          📋 Complaints
+        </button>
+
+        <button routerLink="/citizen"
+                class="text-left px-4 py-3 rounded border hover:bg-slate-100">
+          👥 Ward Members
+        </button>
+
+        <button routerLink="/notify"
+                class="text-left px-4 py-3 rounded border hover:bg-slate-100">
+          💳 Worker Payments
+        </button>
+
+        <button class="text-left px-4 py-3 rounded border hover:bg-slate-100">
+          📢 Announcements
+        </button>
+      </nav>
+    </aside>
+
+    <!-- MAIN CONTENT -->
+    <main class="flex-1 p-6">
+
+      <!-- PAGE TITLE -->
+      <div class="bg-white border-l-4 border-[#0b3d2e] p-5 rounded shadow-sm mb-6">
+        <h2 class="text-2xl font-bold text-gray-800">Nagarsevak Dashboard</h2>
+        <p class="text-gray-500">Monitor complaints, assignments, and worker payment status.</p>
+      </div>
+
+      <!-- KPI CARDS -->
+      <section class="grid grid-cols-4 gap-5 mb-6">
+
+        <div class="bg-white rounded shadow border-t-4 border-blue-700 p-5">
+          <p class="text-gray-500 text-sm">Total Complaints</p>
+          <h2 class="text-3xl font-bold text-gray-800">{{stats?.total}}</h2>
+        </div>
+
+        <div class="bg-white rounded shadow border-t-4 border-green-700 p-5">
+          <p class="text-gray-500 text-sm">Resolved</p>
+          <h2 class="text-3xl font-bold text-gray-800">{{stats?.resolved}}</h2>
+        </div>
+
+        <div class="bg-white rounded shadow border-t-4 border-yellow-600 p-5">
+          <p class="text-gray-500 text-sm">Pending</p>
+          <h2 class="text-3xl font-bold text-gray-800">{{stats?.pending}}</h2>
+        </div>
+
+        <div class="bg-white rounded shadow border-t-4 border-purple-700 p-5">
+          <p class="text-gray-500 text-sm">Allocated Budget</p>
+          <h2 class="text-3xl font-bold text-gray-800">₹12L</h2>
+        </div>
+
+      </section>
+
+      <!-- COMPLAINT PANEL -->
+      <section class="bg-white rounded shadow border">
+
+        <div class="px-5 py-4 bg-[#f8fafc] border-b flex justify-between items-center">
+          <div>
+            <h3 class="text-lg font-bold text-gray-800">Recent Complaints</h3>
+            <p class="text-sm text-gray-500">Complaint assignment and progress tracking</p>
+          </div>
+
+          <div class="flex gap-2">
+            <button class="px-4 py-2 rounded border bg-white hover:bg-slate-100" (click)="filter('')">All</button>
+            <button class="px-4 py-2 rounded border bg-white hover:bg-slate-100" (click)="filter('PENDING')">Pending</button>
+            <button class="px-4 py-2 rounded border bg-white hover:bg-slate-100" (click)="filter('IN_PROGRESS')">In Progress</button>
+            <button class="px-4 py-2 rounded border bg-white hover:bg-slate-100" (click)="filter('COMPLETED')">Completed</button>
+          </div>
+        </div>
+
+        <table class="w-full text-left">
+          <thead class="bg-[#0b3d2e] text-white">
+            <tr>
+              <th class="p-3">Citizen</th>
+              <th class="p-3">Issue</th>
+              <th class="p-3">Status</th>
+              <th class="p-3">Action</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            <tr *ngFor="let c of complaints" class="border-b hover:bg-slate-50">
+              <td class="p-3 font-medium">{{c.username}}</td>
+              <td class="p-3">{{c.caption}}</td>
+
+              <td class="p-3">
+                <span class="px-3 py-1 rounded-full text-sm font-semibold"
+                      [ngClass]="{
+                        'bg-yellow-100 text-yellow-700': c.status === 'PENDING',
+                        'bg-purple-100 text-purple-700': c.status === 'ASSIGNED',
+                        'bg-blue-100 text-blue-700': c.status === 'ACCEPTED',
+                        'bg-orange-100 text-orange-700': c.status === 'IN_PROGRESS',
+                        'bg-green-100 text-green-700': c.status === 'COMPLETED'
+                      }">
+                  {{c.status}}
+                </span>
+              </td>
+
+              <td class="p-3">
+                <button *ngIf="c.status === 'PENDING' || c.status === 'REJECTED'"
+        (click)="openAssignModal(c)"
+        class="bg-blue-700 text-white px-4 py-2 rounded shadow">
+  Assign Worker
+</button>
+
+<span *ngIf="c.status !== 'PENDING' && c.status !== 'REJECTED'"
+      class="text-gray-400 text-sm font-semibold">
+  —
+</span>
+
+                <!-- <button *ngIf="c.status === 'ACCEPTED'"
+                        (click)="updateStatus(c.id, 'IN_PROGRESS')"
+                        class="bg-orange-600 text-white px-4 py-2 rounded shadow">
+                  Start Work
+                </button> -->
+              </td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="flex justify-center items-center gap-4 p-4 bg-slate-50">
+          <button class="px-4 py-2 rounded border bg-white"
+                  (click)="prevPage()"
+                  [disabled]="currentPage === 0">
+            ⬅ Prev
+          </button>
+
+          <span class="font-semibold">
+            Page {{currentPage + 1}} of {{totalPages}}
+          </span>
+
+          <button class="px-4 py-2 rounded border bg-white"
+                  (click)="nextPage()"
+                  [disabled]="currentPage === totalPages - 1">
+            Next ➡
+          </button>
+        </div>
+
+      </section>
+    </main>
+  </div>
+</div>
+
+<!-- ASSIGN MODAL -->
+<div *ngIf="showAssignModal"
+     class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+
+  <div class="bg-white w-[520px] rounded shadow-xl border">
+
+    <div class="bg-[#0b3d2e] text-white px-5 py-4 rounded-t">
+      <h2 class="text-lg font-bold">Assign Government Worker</h2>
+      <p class="text-sm text-green-100">Select verified worker for this complaint</p>
+    </div>
+
+    <div class="p-5">
+
+      <div *ngIf="isLoadingWorkers" class="text-center py-10">
+        Loading workers...
+      </div>
+
+      <div *ngIf="!isLoadingWorkers" class="max-h-80 overflow-y-auto space-y-3">
+
+        <div *ngFor="let w of workers"
+             class="flex justify-between items-center p-3 border rounded hover:bg-slate-50">
+
+          <div class="flex items-center gap-3">
+            <img [src]="w.profileImage || 'https://via.placeholder.com/40'"
+                 class="w-11 h-11 rounded-full border"/>
+
+            <div>
+              <p class="font-semibold">{{w.name}}</p>
+              <p class="text-sm text-gray-500">{{w.workType}} • {{w.experience}}</p>
+            </div>
+          </div>
+
+          <button (click)="assignWorker(w)"
+                  class="bg-[#0b3d2e] text-white px-4 py-2 rounded">
+            Assign
+          </button>
+        </div>
+
+      </div>
+
+      <div class="flex justify-end mt-5">
+        <button (click)="closeAssignModal()"
+                class="px-4 py-2 border rounded hover:bg-slate-100">
+          Cancel
+        </button>
+      </div>
+
+    </div>
+  </div>
+</div>

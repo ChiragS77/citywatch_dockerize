@@ -1,0 +1,53 @@
+# ==============================
+# Environment / Secrets
+# ==============================
+.env
+*.env
+citywatch.env
+
+# ==============================
+# IntelliJ IDEA
+# ==============================
+.idea/
+*.iml
+*.iws
+*.ipr
+
+# ==============================
+# Java / Maven
+# ==============================
+target/
+*.class
+
+# ==============================
+# Angular / Node
+# ==============================
+node_modules/
+dist/
+.angular/
+
+# ==============================
+# Logs
+# ==============================
+*.log
+
+# ==============================
+# OS files
+# ==============================
+.DS_Store
+Thumbs.db
+
+
+# Secrets / local notes
+*.secret
+*.key
+mail.txt
+razorpaykey.txt
+userserv.txt
+dump.txt
+cry.txt
+angular.txt
+apply.txt
+citywath.txt
+complaintservice.txt
+dashboar.txt

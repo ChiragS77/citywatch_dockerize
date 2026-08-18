@@ -1,0 +1,188 @@
+<div class="min-h-screen bg-[#f4f7fb] flex">
+
+  <!-- LEFT BRAND PANEL -->
+  <section class="hidden lg:flex w-[42%] bg-gradient-to-b from-[#073b7a] to-[#0a4c92] text-white p-12 flex-col justify-between">
+
+    <div>
+      <div class="w-20 h-20 rounded-full border border-white/30 flex items-center justify-center text-4xl mb-8 bg-white/10">
+        🏛️
+      </div>
+
+      <h1 class="text-5xl font-bold leading-tight">
+        CityWatch<br>
+        Civic Portal
+      </h1>
+
+      <p class="text-xl text-blue-100 mt-6">
+        Municipal Complaint & Ward Governance System
+      </p>
+
+      <div class="h-px bg-white/30 my-8"></div>
+
+      <div class="space-y-8">
+        <div class="flex gap-4">
+          <div class="feature-icon">🛡️</div>
+          <div>
+            <h3 class="font-bold text-lg">Secure & Trusted</h3>
+            <p class="text-blue-100 text-sm">Protected citizen data and verified access.</p>
+          </div>
+        </div>
+
+        <div class="flex gap-4">
+          <div class="feature-icon">📋</div>
+          <div>
+            <h3 class="font-bold text-lg">Track Complaints</h3>
+            <p class="text-blue-100 text-sm">Submit issues and monitor real-time progress.</p>
+          </div>
+        </div>
+
+        <div class="flex gap-4">
+          <div class="feature-icon">👥</div>
+          <div>
+            <h3 class="font-bold text-lg">Better Governance</h3>
+            <p class="text-blue-100 text-sm">Connect citizens, officers and workers digitally.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="text-blue-100 text-sm">
+      © 2025 CityWatch Municipal Digital Services
+    </div>
+
+  </section>
+
+  <!-- RIGHT LOGIN PANEL -->
+  <section class="flex-1 flex flex-col justify-center items-center px-6 py-10">
+
+    <div class="w-full max-w-xl bg-white rounded-2xl border shadow-xl p-10">
+
+      <div class="text-center mb-8">
+        <h2 class="text-4xl font-bold text-[#073b7a]">
+          Welcome Back!
+        </h2>
+        <p class="text-slate-500 mt-2">
+          Login to access your CityWatch Civic Portal
+        </p>
+      </div>
+
+      <div class="flex items-center gap-4 mb-8">
+        <div class="h-px bg-slate-200 flex-1"></div>
+        <div class="w-10 h-10 rounded-full bg-blue-50 text-[#073b7a] flex items-center justify-center">
+          🛡️
+        </div>
+        <div class="h-px bg-slate-200 flex-1"></div>
+      </div>
+
+      <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="space-y-5">
+
+        <!-- EMAIL -->
+        <div>
+          <label class="login-label">
+            Username / Email
+          </label>
+
+          <div class="login-input-box"
+               [ngClass]="{'input-error': f['email'].errors && submitted}">
+            <span class="text-xl text-slate-400">👤</span>
+
+            <input
+              type="email"
+              formControlName="email"
+              placeholder="Enter your username or email"
+              class="login-input">
+          </div>
+
+          <p *ngIf="f['email'].errors?.['required'] && submitted" class="error-text">
+            Email is required
+          </p>
+
+          <p *ngIf="f['email'].errors?.['email'] && submitted" class="error-text">
+            Enter a valid email
+          </p>
+
+          <p *ngIf="f['email'].errors?.['serverError']" class="error-text">
+            {{f['email'].errors?.['serverError']}}
+          </p>
+        </div>
+
+        <!-- PASSWORD -->
+        <div>
+          <label class="login-label">
+            Password
+          </label>
+
+          <div class="login-input-box"
+               [ngClass]="{'input-error': f['password'].errors && submitted}">
+            <span class="text-xl text-slate-400">🔒</span>
+
+            <input
+              [type]="showPassword ? 'text' : 'password'"
+              formControlName="password"
+              placeholder="Enter your password"
+              class="login-input">
+
+            <button type="button"
+                    (click)="togglePassword()"
+                    class="text-sm text-[#073b7a] font-semibold">
+              {{ showPassword ? 'Hide' : 'Show' }}
+            </button>
+          </div>
+
+          <p *ngIf="f['password'].errors?.['required'] && submitted" class="error-text">
+            Password is required
+          </p>
+
+          <p *ngIf="f['password'].errors?.['serverError']" class="error-text">
+            {{f['password'].errors?.['serverError']}}
+          </p>
+        </div>
+
+        <div class="flex justify-end">
+          <a routerLink="/forgot-password"
+             class="text-sm font-semibold text-[#073b7a] hover:underline">
+            Forgot Password?
+          </a>
+        </div>
+
+        <p *ngIf="loginError"
+           class="bg-red-50 text-red-700 border border-red-200 p-3 rounded-lg text-sm">
+          {{loginError}}
+        </p>
+
+        <button type="submit"
+                [disabled]="loading"
+                class="w-full bg-gradient-to-r from-[#073b7a] to-[#0a4c92] hover:opacity-95 text-white py-4 rounded-xl font-bold shadow-lg disabled:opacity-60 flex justify-center items-center gap-2">
+
+          <span *ngIf="!loading">Login</span>
+          <span *ngIf="loading">Please wait...</span>
+
+        </button>
+
+        <div class="flex items-center gap-4 py-2">
+          <div class="h-px bg-slate-200 flex-1"></div>
+          <span class="text-sm text-slate-400">New to CityWatch?</span>
+          <div class="h-px bg-slate-200 flex-1"></div>
+        </div>
+
+        <p class="text-center text-sm text-slate-600">
+          Don't have an account?
+          <a routerLink="/register" class="font-bold text-[#073b7a] hover:underline">
+            Register Now
+          </a>
+        </p>
+
+      </form>
+
+    </div>
+
+    <footer class="mt-8 text-center text-sm text-slate-500">
+      <p>© 2025 CityWatch Civic Portal. All rights reserved.</p>
+      <p class="mt-2">
+        Privacy Policy &nbsp; | &nbsp; Terms of Use &nbsp; | &nbsp; Help & Support
+      </p>
+    </footer>
+
+  </section>
+
+</div>

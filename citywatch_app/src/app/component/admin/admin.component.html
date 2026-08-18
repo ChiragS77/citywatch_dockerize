@@ -1,0 +1,399 @@
+
+
+<div class="admin-layout">
+
+  <aside class="sidebar">
+    <div>
+      <div class="brand">
+        <div class="brand-icon">🛡️</div>
+        <div>
+          <h2>CityWatch</h2>
+          <p>Admin Portal</p>
+        </div>
+      </div>
+
+      <nav>
+        <button class="nav active">🛡️ <span>Dashboard</span></button>
+
+        <p class="nav-title">Account Management</p>
+        <button class="nav" routerLink="/admin/nagarsevak">👤 <span>Nagarsevak</span></button>
+        <button class="nav" routerLink="/admin/nagaradhyaksha">👤 <span>Nagaradhyaksha</span></button>
+        <button class="nav" routerLink="/admin/worker">👥 <span>Workers</span></button>
+
+        <p class="nav-title">System</p>
+        <button class="nav">🛡️ <span>System Health</span></button>
+        <button class="nav">🔒 <span>Security</span></button>
+        <button class="nav">📊 <span>Reports</span></button>
+
+        <p class="nav-title">AI & Analytics</p>
+        <button class="nav">✦ <span>AI Insights</span></button>
+        <button class="nav">🌐 <span>Duplicate Detection</span></button>
+        <button class="nav">✣ <span>Hotspot Analysis</span></button>
+        <button class="nav">📊 <span>Trend Analysis</span></button>
+
+        <button class="nav settings">⚙️ <span>Settings</span></button>
+        <button class="nav logout">⊞ <span>Logout</span></button>
+      </nav>
+    </div>
+
+    <div class="sidebar-footer">
+      <h4>CityWatch v1.0.0</h4>
+      <p>Smart Governance for<br>Better Tomorrow</p>
+      <div class="city-art">▁▂▃▅▆▇🏙️▇▆▅▃▂▁</div>
+    </div>
+  </aside>
+
+  <main class="main">
+
+    <header class="topbar">
+      <div class="top-left">
+        <span class="menu-icon">☰</span>
+        <div>
+          <h1>Welcome back, Admin! 👋</h1>
+          <p>Here's what's happening in CityWatch today.</p>
+        </div>
+      </div>
+
+      <div class="top-right">
+        <div class="bell">🔔 <span>7</span></div>
+
+        <div class="profile">
+          <img src="assets/default-user.png">
+          <div>
+            <h4>Admin</h4>
+            <p>Super Administrator</p>
+          </div>
+          <span>⌄</span>
+        </div>
+      </div>
+    </header>
+
+    <div class="date-card">
+      📅 {{ today | date:'dd MMM yyyy, EEEE' }}
+    </div>
+
+    <section class="stats-grid">
+
+      <div class="stat-card blue">
+        <div class="stat-icon">👤</div>
+        <div>
+          <p>Total Nagarsevaks</p>
+          <h2>{{stats?.totalNagarsevaks || 0}}</h2>
+          <small>↑ 2 this month</small>
+        </div>
+      </div>
+
+      <div class="stat-card green">
+        <div class="stat-icon">🏛️</div>
+        <div>
+          <p>Total Nagaradhyaksha</p>
+          <h2>{{stats?.totalNagaradhyaksha || 0}}</h2>
+          <small>↑ 1 this month</small>
+        </div>
+      </div>
+
+      <div class="stat-card purple">
+        <div class="stat-icon">👷</div>
+        <div>
+          <p>Total Workers</p>
+          <h2>{{stats?.totalWorkers || 0}}</h2>
+          <small>↑ 8 this month</small>
+        </div>
+      </div>
+
+      <div class="stat-card orange">
+        <div class="stat-icon">👥</div>
+        <div>
+          <p>Total Registered Citizens</p>
+          <h2>{{stats?.totalCitizens || 0}}</h2>
+          <small>↑ 214 this month</small>
+        </div>
+      </div>
+
+    </section>
+
+    <section class="row row-one">
+
+      <div class="panel service-panel">
+        <div class="panel-header">
+          <h3>〽️ Service Health Monitor</h3>
+        </div>
+
+        <table>
+          <thead>
+            <tr>
+              <th>Service</th>
+              <th>Status</th>
+              <th>Response Time</th>
+              <th>Uptime</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            <tr *ngFor="let s of systemHealth">
+              <td>
+                <span class="dot" [ngClass]="s.status === 'UP' ? 'ok' : 'bad'"></span>
+                {{s.serviceName}}
+              </td>
+              <td>
+                <span class="status" [ngClass]="s.status === 'UP' ? 'up' : 'down'">
+                  {{s.status}}
+                </span>
+              </td>
+              <td>{{s.responseTime || '-'}}</td>
+              <td>{{s.uptime || '-'}}</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="view-service">
+          <button>View All Services →</button>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-header">
+          <h3>Citizen Registrations <span>(Last 6 Months)</span></h3>
+          <button>6 Months⌄</button>
+        </div>
+
+        <div class="chart-box">
+          <canvas
+            baseChart
+            [data]="growthChartData"
+            [options]="growthChartOptions"
+            [type]="'line'">
+          </canvas>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-header">
+          <h3>Ward-wise Citizen Distribution</h3>
+          <button>All Wards⌄</button>
+        </div>
+
+        <div class="chart-box">
+          <canvas
+            baseChart
+            [data]="wardChartData"
+            [options]="wardChartOptions"
+            [type]="'bar'">
+          </canvas>
+        </div>
+      </div>
+
+    </section>
+
+    <section class="row row-two">
+
+      <div class="panel">
+        <div class="panel-header">
+          <h3>🛡️ Security Overview</h3>
+        </div>
+
+        <div class="security-grid">
+          <div class="security-card green">
+            <div class="security-icon">👤</div>
+            <div>
+              <p>Active Users Today</p>
+              <h2>342</h2>
+              <small>↑ 12% from yesterday</small>
+            </div>
+          </div>
+
+          <div class="security-card red">
+            <div class="security-icon">🔒</div>
+            <div>
+              <p>Failed Login Attempts</p>
+              <h2>23</h2>
+              <small>↓ 8% from yesterday</small>
+            </div>
+          </div>
+
+          <div class="security-card orange">
+            <div class="security-icon">👥</div>
+            <div>
+              <p>Blocked Users</p>
+              <h2>7</h2>
+              <small>No change</small>
+            </div>
+          </div>
+
+          <div class="security-card blue">
+            <div class="security-icon">🕘</div>
+            <div>
+              <p>Last Login (Admin)</p>
+              <h2>{{today | date:'dd MMM yyyy'}}</h2>
+              <small>{{today | date:'shortTime'}}</small>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-header">
+          <h3>Recent Activities</h3>
+          <button>View All</button>
+        </div>
+
+        <div class="activity" *ngFor="let a of recentActivities">
+          <div class="activity-icon">👤</div>
+          <div>
+            <h4>{{a.details || a.action || 'Admin activity'}}</h4>
+            <p>by {{a.performedBy || 'Admin'}}</p>
+          </div>
+          <span>{{a.createdAt | date:'shortTime'}}</span>
+        </div>
+      </div>
+
+      <!-- <div class="panel">
+        <div class="panel-header">
+          <h3>Alerts & Notifications</h3>
+          <button>View All</button>
+        </div>
+
+        <div class="alert danger">
+          <span>⚠️</span>
+          <div>
+            <h4>2 Services are Down</h4>
+            <p>Payment Service, Notification Service</p>
+          </div>
+          <small>10:32 AM</small>
+        </div>
+
+        <div class="alert warning">
+          <span>⚠️</span>
+          <div>
+            <h4>3 Workers are Inactive</h4>
+            <p>Inactive for more than 7 days</p>
+          </div>
+          <small>09:15 AM</small>
+        </div>
+
+        <div class="alert orange">
+          <span>⚠️</span>
+          <div>
+            <h4>12 Unassigned Complaints</h4>
+            <p>Require attention</p>
+          </div>
+          <small>Yesterday</small>
+        </div>
+
+        <div class="alert info">
+          <span>ℹ️</span>
+          <div>
+            <h4>System Backup Completed</h4>
+            <p>All data is secure</p>
+          </div>
+          <small>{{today | date:'dd MMM yyyy'}}</small>
+        </div>
+      </div> -->
+
+      <div class="panel">
+  <div class="panel-header">
+    <h3>Alerts & Notifications</h3>
+    <button>View All</button>
+  </div>
+
+  <div class="alert"
+       *ngFor="let alert of alerts"
+       [ngClass]="alert.type">
+
+    <span *ngIf="alert.type === 'danger'">⚠️</span>
+    <span *ngIf="alert.type === 'warning'">⚠️</span>
+    <span *ngIf="alert.type === 'info'">ℹ️</span>
+
+    <div>
+      <h4>{{alert.title}}</h4>
+      <p>{{alert.message}}</p>
+    </div>
+
+    <small>{{alert.time}}</small>
+  </div>
+</div>
+
+    </section>
+
+    <section class="row row-three">
+
+      <div class="panel account-panel">
+        <div class="panel-header">
+          <h3>Account Management</h3>
+        </div>
+
+        <div class="account-grid">
+          <div class="account-card">
+            <div class="account-top">
+              <div class="account-icon blue">👤</div>
+              <div>
+                <h4>Nagarsevak Management</h4>
+                <p>Create, view, update or remove Nagarsevak accounts</p>
+              </div>
+            </div>
+            <button routerLink="/admin/nagarsevak">Manage Nagarsevaks →</button>
+          </div>
+
+          <div class="account-card">
+            <div class="account-top">
+              <div class="account-icon green">🏛️</div>
+              <div>
+                <h4>Nagaradhyaksha Management</h4>
+                <p>Create, view, update or remove Nagaradhyaksha accounts</p>
+              </div>
+            </div>
+            <button class="green-btn" routerLink="/admin/nagaradhyaksha">Manage Nagaradhyakshas →</button>
+          </div>
+
+          <div class="account-card">
+            <div class="account-top">
+              <div class="account-icon purple">👷</div>
+              <div>
+                <h4>Worker Management</h4>
+                <p>View workers, deactivate accounts and check ratings</p>
+              </div>
+            </div>
+            <button class="purple-btn" routerLink="/admin/worker">Manage Workers →</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel ai-panel">
+        <div class="panel-header">
+          <h3>AI Insights</h3>
+        </div>
+
+        <div class="ai-grid">
+          <div class="ai-card blue">
+            <div class="ai-icon">🧠</div>
+            <p>Duplicate Complaints</p>
+            <h2>47</h2>
+            <span>duplicate complaints<br>detected this month</span>
+            <small>↓ 12% from last month</small>
+          </div>
+
+          <div class="ai-card red">
+            <div class="ai-icon">📍</div>
+            <p>Hotspot Detection</p>
+            <span>Most reported area</span>
+            <h2>Ward 3</h2>
+            <label>Water Issues</label>
+            <small>↑ 18% from last month</small>
+          </div>
+
+          <div class="ai-card green">
+            <div class="ai-icon">📈</div>
+            <p>Trend Analysis</p>
+            <span>Road Complaints</span>
+            <h2>↑ 15%</h2>
+            <span>Water Complaints</span>
+            <h2 class="small-h2">↓ 10%</h2>
+            <small>Compared to last month</small>
+          </div>
+        </div>
+      </div>
+
+    </section>
+
+  </main>
+</div>

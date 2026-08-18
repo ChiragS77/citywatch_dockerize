@@ -1,0 +1,22 @@
+.gov-nav {
+  width: 100%;
+  display: block;
+  text-align: left;
+  padding: 12px 14px;
+  border-radius: 8px;
+  font-weight: 600;
+  color: #334155;
+  border: 1px solid transparent;
+  transition: 0.2s ease;
+}
+
+.gov-nav:hover {
+  background: #f1f5f9;
+  color: #083c2f;
+  border-color: #d1d5db;
+}
+
+.gov-nav.active {
+  background: #083c2f;
+  color: white;
+}

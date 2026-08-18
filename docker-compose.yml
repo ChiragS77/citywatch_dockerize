@@ -1,0 +1,100 @@
+
+services:
+
+  mysql:
+    image: mysql:8
+    container_name: citywatch-mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
+      MYSQL_DATABASE: citywatch
+    ports:
+      - "3307:3306"
+    volumes:
+      - citywatch-mysql-data:/var/lib/mysql
+    networks:
+      - citywatch-net
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uroot", "-p${DB_PASSWORD}"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  eureka-server:
+    build: ./EurekaServer/EurekaServer
+    container_name: eureka-server
+    ports:
+      - "8761:8761"
+    networks:
+      - citywatch-net
+
+  user-service:
+    build: ./UserSer/UserSer
+    container_name: user-service
+    ports:
+      - "8081:8081"
+    depends_on:
+      - mysql
+      - eureka-server
+    environment:
+      EUREKA_URL: http://eureka-server:8761/eureka/
+      DB_URL: jdbc:mysql://mysql:3306/citywatch?createDatabaseIfNotExist=true
+      DB_USERNAME: ${DB_USERNAME}
+      DB_PASSWORD: ${DB_PASSWORD}
+      CLOUDINARY_CLOUD_NAME: ${CLOUDINARY_CLOUD_NAME}
+      CLOUDINARY_API_KEY: ${CLOUDINARY_API_KEY}
+      CLOUDINARY_API_SECRET: ${CLOUDINARY_API_SECRET}
+      JWT_SECRET: ${JWT_SECRET}
+      MAIL_USERNAME: ${MAIL_USERNAME}
+      MAIL_PASSWORD: ${MAIL_PASSWORD}
+    networks:
+      - citywatch-net
+
+  complaint-service:
+    build: ./ComplaintService/ComplaintService
+    container_name: complaint-service
+    ports:
+      - "8082:8082"
+    depends_on:
+      - mysql
+      - eureka-server
+    environment:
+      EUREKA_URL: http://eureka-server:8761/eureka/
+      DB_URL: jdbc:mysql://mysql:3306/citywatch_post?createDatabaseIfNotExist=true
+      DB_USERNAME: ${DB_USERNAME}
+      DB_PASSWORD: ${DB_PASSWORD}
+      JWT_SECRET: ${JWT_SECRET}
+      RAZORPAY_KEY_ID: ${RAZORPAY_KEY_ID}
+      RAZORPAY_KEY_SECRET: ${RAZORPAY_KEY_SECRET}
+    networks:
+      - citywatch-net
+
+  api-gateway:
+    build: ./Api-Gateway/Api-Gateway
+    container_name: api-gateway
+    ports:
+      - "8080:8080"
+    depends_on:
+      - eureka-server
+      - user-service
+      - complaint-service
+    environment:
+      EUREKA_URL: http://eureka-server:8761/eureka/
+      FRONTEND_URL: ${FRONTEND_URL}
+    networks:
+      - citywatch-net
+
+  angular-app:
+    build: ./citywatch_app
+    container_name: citywatch-angular
+    ports:
+      - "4200:80"
+    depends_on:
+      - api-gateway
+    networks:
+      - citywatch-net
+
+volumes:
+  citywatch-mysql-data:
+
+networks:
+  citywatch-net:

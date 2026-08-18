@@ -1,0 +1,385 @@
+<div class="min-h-screen bg-[#f5f8fc] text-slate-800">
+
+  <!-- HEADER -->
+  <header class="sticky top-0 z-50 bg-gradient-to-r from-[#073b7a] to-[#0a4c92] text-white shadow-lg">
+    <div class="px-8 py-4 flex justify-between items-center">
+
+      <div class="flex items-center gap-4">
+        <button (click)="toggleSidebar()"
+                class="bg-white/10 hover:bg-white/20 border border-white/20 px-4 py-2 rounded-xl">
+          ☰
+        </button>
+
+        <div>
+          <h1 class="text-3xl font-bold">CityWatch Worker Portal</h1>
+          <p class="text-blue-100 text-sm">Municipal Work Assignment & Governance System</p>
+        </div>
+      </div>
+
+      <div class="relative">
+        <button (click)="toggleProfileMenu()"
+                class="flex items-center gap-3 bg-white/10 hover:bg-white/20 px-3 py-2 rounded-xl border border-white/10">
+          <img [src]="worker?.profileImage || 'https://via.placeholder.com/40'"
+               class="w-12 h-12 rounded-full border-2 border-white object-cover">
+
+          <div class="text-left hidden md:block">
+            <p class="font-bold">{{worker?.name}}</p>
+            <p class="text-xs text-blue-100">Municipal Worker</p>
+          </div>
+
+          <span>⌄</span>
+        </button>
+
+        <div *ngIf="profileMenuOpen"
+             class="absolute right-0 mt-4 w-72 bg-white rounded-2xl shadow-2xl border overflow-hidden z-50">
+
+          <div class="bg-gradient-to-r from-[#073b7a] to-[#0a4c92] px-5 py-5 text-white">
+            <div class="flex items-center gap-4">
+              <img [src]="worker?.profileImage || 'https://via.placeholder.com/40'"
+                   class="w-16 h-16 rounded-full border-2 border-white object-cover">
+
+              <div>
+                <h3 class="font-bold text-lg">{{worker?.name}}</h3>
+                <p class="text-sm text-blue-100">{{worker?.email}}</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="py-2">
+            <button class="profile-menu-item">⚙️ <span>Settings</span></button>
+            <button class="profile-menu-item">🔔 <span>Notifications</span></button>
+            <button (click)="openEdit()" class="profile-menu-item">👤 <span>Edit Profile</span></button>
+          </div>
+
+          <div class="border-t py-2">
+            <button (click)="logout()"
+                    class="profile-menu-item logout-menu"
+                    [disabled]="isLoggingOut">
+              <span *ngIf="!isLoggingOut">🚪</span>
+              <span *ngIf="isLoggingOut" class="mini-loader"></span>
+              <span>{{ isLoggingOut ? 'Logging out...' : 'Logout' }}</span>
+            </button>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <div class="flex">
+
+    <!-- SIDEBAR -->
+    <aside *ngIf="sidebarOpen"
+           class="w-72 min-h-screen sticky top-[88px] bg-white border-r shadow-sm p-6 flex flex-col justify-between">
+
+      <div>
+        <div class="worker-profile-card">
+          <img [src]="worker?.profileImage || '/assets/worker.jpg'"
+               class="w-28 h-28 rounded-full mx-auto mb-4 border-4 border-white object-cover">
+
+          <h2 class="font-bold text-xl">{{worker?.name}}</h2>
+          <p class="text-blue-100 font-semibold mt-1">{{worker?.workType}}</p>
+          <p class="text-sm text-blue-100 mt-1">{{worker?.district}}, {{worker?.taluka}}</p>
+
+          <span class="inline-block mt-4 px-4 py-2 rounded-full text-xs font-bold"
+                [ngClass]="{
+                  'bg-green-400 text-white': worker?.available,
+                  'bg-red-400 text-white': !worker?.available
+                }">
+            {{ worker?.available ? 'AVAILABLE FOR WORK' : 'NOT AVAILABLE' }}
+          </span>
+
+          <button (click)="openEdit()"
+                  class="mt-4 w-full bg-white text-[#073b7a] py-2 rounded-xl font-bold">
+            Edit Profile
+          </button>
+        </div>
+
+        <nav class="mt-6 space-y-2">
+          <button class="worker-nav active">📋 Work Notifications</button>
+          <button class="worker-nav">🛠 Assigned Complaints</button>
+          <button class="worker-nav">💰 Payment History</button>
+          <button class="worker-nav">📊 Reports</button>
+        </nav>
+      </div>
+
+      <button (click)="logout()" class="worker-nav logout">
+        🚪 Logout
+      </button>
+    </aside>
+
+    <!-- MAIN -->
+    <main class="flex-1 p-8 overflow-y-auto">
+
+      <section class="bg-white border rounded-2xl shadow-sm p-6 mb-6 flex justify-between items-center">
+        <div>
+          <h2 class="text-3xl font-bold text-[#073b7a]">
+            Welcome, {{worker?.name}}
+          </h2>
+          <p class="text-gray-500 mt-2">
+            Manage municipal complaint assignments and completion updates.
+          </p>
+        </div>
+
+        <div class="hidden md:flex w-24 h-24 rounded-2xl bg-blue-50 items-center justify-center text-5xl">
+          👷
+        </div>
+      </section>
+
+      <section class="grid grid-cols-1 md:grid-cols-3 gap-5 mb-8">
+        <div class="worker-stat-card">
+          <div>
+            <p class="text-gray-500 font-medium">Assigned Work</p>
+            <h3 class="text-4xl font-bold text-[#073b7a] mt-2">{{notifications.length}}</h3>
+          </div>
+          <div class="stat-icon bg-blue-100">📋</div>
+        </div>
+
+        <div class="worker-stat-card">
+          <div>
+            <p class="text-gray-500 font-medium">In Progress</p>
+            <h3 class="text-4xl font-bold text-orange-500 mt-2">4</h3>
+          </div>
+          <div class="stat-icon bg-orange-100">🚧</div>
+        </div>
+
+        <div class="worker-stat-card">
+          <div>
+            <p class="text-gray-500 font-medium">Completed</p>
+            <h3 class="text-4xl font-bold text-green-600 mt-2">12</h3>
+          </div>
+          <div class="stat-icon bg-green-100">✅</div>
+        </div>
+      </section>
+
+      <div *ngIf="notifications.length === 0"
+           class="bg-white rounded-2xl border shadow-sm p-14 text-center text-gray-500">
+        <div class="text-6xl mb-4">📭</div>
+        <h3 class="text-2xl font-bold text-gray-700">No Work Assigned</h3>
+        <p class="mt-2">You currently have no municipal assignments.</p>
+      </div>
+
+      <div *ngIf="notifications.length > 0"
+           class="bg-white rounded-2xl border shadow-sm overflow-hidden">
+
+        <div class="bg-gradient-to-r from-[#073b7a] to-[#0a4c92] text-white px-6 py-5">
+          <h3 class="font-bold text-xl">Assigned Municipal Work</h3>
+          <p class="text-blue-100 text-sm mt-1">Complaint allocation and work status management</p>
+        </div>
+
+        <table class="w-full text-left">
+          <thead class="bg-blue-50 border-b">
+            <tr>
+              <th class="p-5 font-bold text-[#073b7a]">Complaint Details</th>
+              <th class="p-5 font-bold text-[#073b7a]">Location</th>
+              <th class="p-5 font-bold text-[#073b7a]">Status</th>
+              <th class="p-5 text-right font-bold text-[#073b7a]">Action</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            <tr *ngFor="let n of notifications" class="border-b hover:bg-slate-50 transition">
+
+              <td class="p-5">
+                <div class="flex gap-4 items-center">
+                  <img [src]="n.details?.imageUrl || 'https://via.placeholder.com/80'"
+                       class="w-24 h-24 object-cover rounded-xl border">
+
+                  <div>
+                    <p class="font-bold text-lg text-gray-800">{{ n.message }}</p>
+                    <p class="text-sm text-gray-500 mt-1 max-w-md">{{ n.details?.caption }}</p>
+                    <p class="text-xs text-gray-400 mt-2">Complaint ID: {{ n.complaintId }}</p>
+                  </div>
+                </div>
+              </td>
+
+              <td class="p-5 text-sm text-gray-600">
+                <p>📍 {{n.details?.taluka}}, {{n.details?.district}}</p>
+                <p class="font-semibold">Ward {{n.details?.wardNo}}</p>
+              </td>
+
+              <td class="p-5">
+                <span class="px-4 py-2 rounded-full text-xs font-bold"
+                      [ngClass]="{
+                        'bg-yellow-100 text-yellow-700': n.details?.status === 'PENDING',
+                        'bg-blue-100 text-blue-700': n.details?.status === 'ACCEPTED',
+                        'bg-orange-100 text-orange-700': n.details?.status === 'IN_PROGRESS',
+                        'bg-purple-100 text-purple-700': n.details?.status === 'COMPLETION_REQUESTED',
+                        'bg-green-100 text-green-700': n.details?.status === 'COMPLETED',
+                        'bg-red-100 text-red-700': n.details?.status === 'REJECTED'
+                      }">
+                  {{ n.details?.status }}
+                </span>
+              </td>
+
+              <td class="p-5 text-right">
+                <ng-container *ngIf="n.details?.status === 'PENDING'">
+                  <button (click)="accept(n.id)"
+                          class="bg-[#073b7a] text-white px-5 py-2 rounded-xl font-semibold mr-2">
+                    Accept
+                  </button>
+
+                  <button (click)="reject(n.id)"
+                          class="border border-red-300 text-red-700 px-5 py-2 rounded-xl font-semibold">
+                    Reject
+                  </button>
+                </ng-container>
+
+                <ng-container *ngIf="n.details?.status === 'ACCEPTED'">
+                  <button (click)="startWork(n.complaintId)"
+                          class="bg-orange-500 text-white px-5 py-2 rounded-xl font-semibold">
+                    Start Work
+                  </button>
+                </ng-container>
+
+                <ng-container *ngIf="n.details?.status === 'IN_PROGRESS'">
+                  <button (click)="openCompleteModal(n.complaintId)"
+                          class="bg-green-600 text-white px-5 py-2 rounded-xl font-semibold">
+                    Submit Completion
+                  </button>
+                </ng-container>
+
+                <ng-container *ngIf="n.details?.status === 'COMPLETION_REQUESTED'">
+                  <span class="text-yellow-700 font-semibold">Waiting for Approval</span>
+                </ng-container>
+
+                <ng-container *ngIf="n.details?.status === 'COMPLETED'">
+                  <span class="text-green-700 font-bold">Work Completed</span>
+                </ng-container>
+              </td>
+
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+    </main>
+  </div>
+</div>
+
+<!-- EDIT PROFILE MODAL -->
+<div *ngIf="showEditModal"
+     class="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 px-4">
+
+  <div class="bg-white w-[650px] max-w-[95vw] rounded-2xl shadow-2xl border overflow-hidden">
+
+    <div class="bg-gradient-to-r from-[#073b7a] to-[#0a4c92] text-white px-7 py-5 flex justify-between items-start">
+      <div>
+        <h2 class="text-2xl font-bold">Edit Worker Profile</h2>
+        <p class="text-sm text-blue-100 mt-1">Update work details, availability and payment information</p>
+      </div>
+
+      <button (click)="closeEdit()" class="text-2xl hover:bg-white/10 w-10 h-10 rounded-lg">
+        ×
+      </button>
+    </div>
+
+    <div class="p-7 bg-[#f8fbff]">
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+
+        <div>
+          <label class="form-label">Full Name</label>
+          <input [(ngModel)]="editData.name" class="modal-input" placeholder="Enter full name">
+        </div>
+
+        <div>
+          <label class="form-label">District</label>
+          <input [(ngModel)]="editData.district" class="modal-input" placeholder="Enter district">
+        </div>
+
+        <div>
+          <label class="form-label">Taluka</label>
+          <input [(ngModel)]="editData.taluka" class="modal-input" placeholder="Enter taluka">
+        </div>
+
+        <div>
+          <label class="form-label">Work Type</label>
+          <select [(ngModel)]="editData.workType" class="modal-input">
+            <option *ngFor="let t of workTypes" [value]="t">{{t}}</option>
+          </select>
+        </div>
+
+        <div>
+          <label class="form-label">Experience</label>
+          <input [(ngModel)]="editData.experience" class="modal-input" placeholder="Example: 2 years">
+        </div>
+
+        <div>
+          <label class="form-label">UPI ID</label>
+          <input [(ngModel)]="editData.upiId" class="modal-input" placeholder="example@upi">
+        </div>
+
+      </div>
+
+      <label class="mt-5 flex items-center gap-3 text-sm text-gray-700 bg-white border rounded-xl p-4">
+        <input type="checkbox" [(ngModel)]="editData.available" class="accent-[#073b7a]">
+        Available for new work assignments
+      </label>
+
+      <div class="mt-5 border rounded-xl p-4 bg-white">
+        <label class="form-label">Profile Image</label>
+
+        <div class="flex items-center gap-5">
+          <img [src]="previewUrl || worker?.profileImage || 'https://via.placeholder.com/100'"
+               class="w-24 h-24 rounded-full border object-cover">
+
+          <input type="file" (change)="onImageChange($event)" class="text-sm">
+        </div>
+      </div>
+
+      <div class="flex justify-end gap-3 pt-5 mt-5 border-t">
+        <button (click)="closeEdit()"
+                class="px-6 py-3 border rounded-xl hover:bg-slate-100 font-semibold">
+          Cancel
+        </button>
+
+        <button (click)="updateProfile()"
+                class="bg-[#073b7a] text-white px-7 py-3 rounded-xl font-bold shadow">
+          Save Changes
+        </button>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- COMPLETE WORK MODAL -->
+<div *ngIf="showCompleteModal"
+     class="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 px-4">
+
+  <div class="bg-white w-[480px] max-w-[95vw] rounded-2xl shadow-2xl border overflow-hidden">
+
+    <div class="bg-gradient-to-r from-[#073b7a] to-[#0a4c92] text-white px-6 py-5">
+      <h2 class="font-bold text-2xl">Submit Work Completion</h2>
+      <p class="text-sm text-blue-100 mt-1">Upload proof image and payment amount</p>
+    </div>
+
+    <div class="p-6 bg-[#f8fbff]">
+
+      <label class="form-label">Work Proof Image</label>
+      <input type="file"
+             (change)="onCompleteImage($event)"
+             class="w-full border rounded-xl px-4 py-3 bg-white mb-5">
+
+      <label class="form-label">Payment Amount</label>
+      <input type="number"
+             [(ngModel)]="completionData.amount"
+             placeholder="Enter amount"
+             class="modal-input">
+
+      <div class="flex justify-end gap-3 mt-6 pt-5 border-t">
+        <button (click)="closeCompleteModal()"
+                class="px-5 py-3 border rounded-xl hover:bg-slate-100 font-semibold">
+          Cancel
+        </button>
+
+        <button (click)="submitCompletion()"
+                class="bg-green-600 text-white px-6 py-3 rounded-xl font-bold shadow">
+          Submit
+        </button>
+      </div>
+
+    </div>
+  </div>
+</div>

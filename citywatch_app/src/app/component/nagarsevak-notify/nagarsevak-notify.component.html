@@ -1,0 +1,97 @@
+<div class="min-h-screen bg-slate-100 p-6">
+
+  <div class="bg-white rounded-lg shadow border overflow-hidden">
+
+    <div class="bg-[#0b3d2e] text-white px-5 py-4 flex justify-between items-center">
+      <div>
+        <h2 class="text-xl font-bold">Worker Payment Requests</h2>
+        <p class="text-sm text-green-100">Municipal work completion payment approval</p>
+      </div>
+
+      <button routerLink="/nagarsevak"
+              class="bg-white text-[#0b3d2e] px-4 py-2 rounded font-semibold text-sm">
+        ← Dashboard
+      </button>
+    </div>
+
+    <table class="w-full text-left">
+      <thead class="bg-slate-100 border-b">
+        <tr>
+          <th class="p-4">Worker</th>
+          <th class="p-4">Amount</th>
+          <th class="p-4">Proof</th>
+          <th class="p-4">Status</th>
+          <th class="p-4 text-right">Action</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        <tr *ngFor="let n of notifications" class="border-b hover:bg-slate-50">
+          <td class="p-4 font-semibold">{{ n.workerEmail }}</td>
+
+          <td class="p-4 font-bold text-[#0b3d2e]">
+            ₹{{ n.amount }}
+          </td>
+
+          <td class="p-4">
+            <button (click)="openProof(n.proofImageUrl)"
+                    class="px-3 py-1 border rounded text-sm">
+              View Proof
+            </button>
+          </td>
+
+          <td class="p-4">
+            <span class="px-3 py-1 rounded-full text-xs font-bold"
+                  [ngClass]="{
+                    'bg-green-100 text-green-700': n.paymentDone,
+                    'bg-yellow-100 text-yellow-700': !n.paymentDone
+                  }">
+              {{ n.paymentDone ? 'PAID' : 'PENDING' }}
+            </span>
+          </td>
+
+          <td class="p-4 text-right">
+            <button *ngIf="!n.paymentDone"
+                    (click)="payWorker(n)"
+                    class="bg-[#0b3d2e] text-white px-4 py-2 rounded">
+              Pay Now
+            </button>
+
+            <span *ngIf="n.paymentDone" class="text-green-700 font-bold">
+              Completed
+            </span>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+  </div>
+
+</div>
+
+<div *ngIf="selectedProofImage"
+     class="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50">
+
+  <div class="bg-white rounded-lg shadow-xl w-[700px] max-w-[90vw] overflow-hidden">
+
+    <div class="bg-[#0b3d2e] text-white px-5 py-3 flex justify-between items-center">
+      <h3 class="font-bold">Work Completion Proof</h3>
+
+      <button (click)="closeProof()" class="text-white text-xl font-bold">
+        ×
+      </button>
+    </div>
+
+    <div class="p-5">
+      <img [src]="selectedProofImage"
+           class="w-full max-h-[70vh] object-contain rounded border">
+    </div>
+
+    <div class="px-5 py-3 border-t flex justify-end">
+      <button (click)="closeProof()" class="px-5 py-2 rounded border">
+        Cancel
+      </button>
+    </div>
+
+  </div>
+</div>
