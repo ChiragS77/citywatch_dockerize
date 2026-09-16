@@ -69,7 +69,7 @@ public class UserService {
                 worker.setRating(0.0);
 
                 // ⚠️ You don't have workType here → so set later OR pass in request
-//                worker.setWorkType(WorkType.ELECTRICIAN); // temporary
+                worker.setWorkType(req.getWorkType()); // temporary
 
                 workerRepository.save(worker);
             }
@@ -77,7 +77,9 @@ public class UserService {
             return new MessageResponse("Registered successfully");
 
         } catch (Exception e){
-            return new MessageResponse("Registration failed");
+//            return new MessageResponse("Registration failed");
+            e.printStackTrace();
+            throw e;
         }
     }
 

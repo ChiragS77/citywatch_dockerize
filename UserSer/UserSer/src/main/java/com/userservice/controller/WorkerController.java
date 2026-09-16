@@ -6,7 +6,10 @@ import com.userservice.entity.WorkType;
 import com.userservice.entity.Worker;
 import com.userservice.service.WorkerService;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
@@ -29,6 +32,7 @@ public class WorkerController {
     ) {
 
         String email = (String) request.getAttribute("username");
+        System.out.println("Worktype==========>"+workType);
 
         Worker worker = workerService.registerWorker(email, workType, image);
 
@@ -93,4 +97,26 @@ public class WorkerController {
 
         return workerService.getWorkerByEmail(email);
     }
+
+
+    // 🔥 LOGOUT
+    @PostMapping("/logout")
+    public ResponseEntity<?> logout(HttpServletRequest request, HttpServletResponse response) {
+
+        String email = (String) request.getAttribute("username");
+        System.out.println("================= Logout requested for: " + email + " ===================");
+
+        ResponseCookie cookie = ResponseCookie.from("jwt", "")
+                .httpOnly(true)
+                .secure(false)      // set true once you're on HTTPS in prod
+                .path("/")
+                .maxAge(0)
+                .sameSite("Lax")
+                .build();
+
+        response.addHeader(HttpHeaders.SET_COOKIE, cookie.toString());
+
+        return ResponseEntity.ok().build();
+    }
 }
+

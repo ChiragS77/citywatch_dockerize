@@ -110,10 +110,10 @@ public class PostService {
         return repo.save(post);
     }
 
-    @Cacheable(
-            value = "feedCache",
-            key = "#role + '-' + #district + '-' + #taluka + '-' + #wardNo + '-' + #page + '-' + #size"
-    )
+//    @Cacheable(
+//            value = "feedCache",
+//            key = "#role + '-' + #district + '-' + #taluka + '-' + #wardNo + '-' + #page + '-' + #size"
+//    )
     public List<PostResponse> getFeed(Integer wardNo,
                                       String username,
                                       String role,
@@ -252,7 +252,11 @@ public List<PostResponse> getFeed(Integer wardNo,
             res.setCaption(post.getCaption());
             res.setImageUrl(post.getImageUrl());
             res.setType(post.getType().name());
-            res.setStatus(post.getStatus().name());
+            res.setStatus(
+                    post.getStatus() != null
+                            ? post.getStatus().name()
+                            : null
+            );
             res.setUsername(post.getUsername());
             System.out.println("--------------- "+post.getUsername());
             res.setCreatedAt(post.getCreatedAt());
@@ -491,11 +495,40 @@ public List<PostResponse> getFeed(Integer wardNo,
         notificationService.notifyNagarsevak(notification);
     }
 
+//    public Map<String, Long> getWardComplaintStats(
+//            Integer wardNo,
+//            String district,
+//            String taluka
+//    ) {
+//        long pending = repo.countByWardNoAndDistrictAndTalukaAndStatus(
+//                wardNo, district, taluka, Status.PENDING
+//        );
+//
+//        long inProgress = repo.countByWardNoAndDistrictAndTalukaAndStatus(
+//                wardNo, district, taluka, Status.IN_PROGRESS
+//        );
+//
+//        long resolved = repo.countByWardNoAndDistrictAndTalukaAndStatus(
+//                wardNo, district, taluka, Status.COMPLETED
+//        );
+//
+//        return Map.of(
+//                "pending", pending,
+//                "inProgress", inProgress,
+//                "resolved", resolved
+//        );
+//    }
+
     public Map<String, Long> getWardComplaintStats(
             Integer wardNo,
             String district,
             String taluka
     ) {
+
+        System.out.println("Ward = " + wardNo);
+        System.out.println("District = " + district);
+        System.out.println("Taluka = " + taluka);
+
         long pending = repo.countByWardNoAndDistrictAndTalukaAndStatus(
                 wardNo, district, taluka, Status.PENDING
         );
@@ -507,6 +540,10 @@ public List<PostResponse> getFeed(Integer wardNo,
         long resolved = repo.countByWardNoAndDistrictAndTalukaAndStatus(
                 wardNo, district, taluka, Status.COMPLETED
         );
+
+        System.out.println("Pending = " + pending);
+        System.out.println("In Progress = " + inProgress);
+        System.out.println("Resolved = " + resolved);
 
         return Map.of(
                 "pending", pending,

@@ -322,8 +322,12 @@ public ResponseEntity<?> assignWorker(@PathVariable Long id,
         String district = (String) request.getAttribute("district");
         String taluka = (String) request.getAttribute("taluka");
 
+        System.out.println("========== WARD STATS ==========");
+        System.out.println("Ward No   : " + wardNo);
+        System.out.println("District  : " + district);
+        System.out.println("Taluka    : " + taluka);
+        System.out.println("================================");
+
         return service.getWardComplaintStats(wardNo, district, taluka);
     }
-
-
 }

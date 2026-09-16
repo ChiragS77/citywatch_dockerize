@@ -1,6 +1,7 @@
 package com.userservice.dto;
 
 import com.userservice.entity.Role;
+import com.userservice.entity.WorkType;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import lombok.AllArgsConstructor;
@@ -25,6 +26,7 @@ public class RegisterReq {
     private String taluka;
     private Integer wardNo;
     private LocalDate dob;
+    private WorkType workType;
 
     @Enumerated(EnumType.STRING)
     private Role  role;

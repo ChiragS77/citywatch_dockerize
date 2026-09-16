@@ -3,14 +3,17 @@ package com.userservice.entity;
 public enum WorkType {
     ELECTRICIAN,
     PLUMBER,
+    CARPENTER,
     CLEANER,
-    ROAD,
-    WATER,
     ROAD_REPAIR,
     GARBAGE_COLLECTION,
     STREET_LIGHT_MAINTENANCE,
     WATER_SUPPLY,
     DRAINAGE,
-    TREE_MAINTENANCE
+    SEWERAGE,
+    TREE_MAINTENANCE,
+    CIVIL_WORK,
+    PEST_CONTROL,
+    PARK_MAINTENANCE
 
 }

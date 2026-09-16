@@ -36,6 +36,15 @@ public class AdminService {
     private final ActivityLogRepository activityLogRepository;
     private final ActivityLogService activityLogService;
 
+    public void logout(String email) {
+        ActivityLog log = new ActivityLog();
+        log.setAction("LOGOUT");
+        log.setDetails("Admin logged out");
+        log.setPerformedBy(email != null ? email : "Unknown");
+        log.setCreatedAt(LocalDateTime.now());
+        activityLogRepository.save(log);
+    }
+
     public User createPoliticalUser(CreatePoliticalUserRequest request, Role role) {
 
 

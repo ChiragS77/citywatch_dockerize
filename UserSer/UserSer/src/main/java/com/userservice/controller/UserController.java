@@ -67,9 +67,10 @@ public class UserController {
         System.out.println("Enter into method....");
         Cookie cookie = new Cookie("jwt", null);
         cookie.setHttpOnly(true);
-        cookie.setPath("/");
+        cookie.setPath("/login");
         cookie.setMaxAge(0);
         response.addCookie(cookie);
+        System.out.println("RESPONSE___________>>>");
         return ResponseEntity.ok(new MessageResponse("Logged out successfully"));
     }
 

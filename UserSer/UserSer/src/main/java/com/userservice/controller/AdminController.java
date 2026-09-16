@@ -7,12 +7,17 @@ import com.userservice.service.ActivityLogService;
 import com.userservice.service.AdminAlertService;
 import com.userservice.service.AdminHealthService;
 import com.userservice.service.AdminService;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
@@ -27,6 +32,8 @@ public class AdminController {
     private final AdminHealthService adminHealthService;
 
     private final AdminService adminService;
+
+
 
     // Create nagarsevak
 //    @PostMapping("/create-nagarsevak")
@@ -243,5 +250,28 @@ public class AdminController {
         adminService.deleteWorker(id);
         return ResponseEntity.ok("Worker deleted successfully");
     }
+
+    @PostMapping("/logout")
+    public ResponseEntity<?> logout(HttpServletRequest request, HttpServletResponse response) {
+
+        String email = (String) request.getAttribute("username");
+        System.out.println("================= Admin logout requested for: " + email + " ===================");
+
+        adminService.logout(email);
+
+        ResponseCookie cookie = ResponseCookie.from("jwt", "")
+                .httpOnly(true)
+                .secure(false)      // set true once you're on HTTPS in prod
+                .path("/")
+                .maxAge(0)
+                .sameSite("Lax")
+                .build();
+
+        response.addHeader(HttpHeaders.SET_COOKIE, cookie.toString());
+
+        return ResponseEntity.ok().build();
+    }
+
+
 
 }
